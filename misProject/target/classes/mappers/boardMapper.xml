@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.spring.mapper.BoardMapper">
+	<insert id="create">
+		INSERT INTO TBL_BOARD (BNO, TITLE, CONTENT, WRITER)
+			VALUES (SEQ_BOARD.nextval, #{title}, #{content}, #{writer})
+	</insert>
+	<select id="read" resultType="com.spring.domain.BoardVO">
+		SELECT BNO, TITLE, CONTENT, WRITER, REGDATE, VIEWCNT
+			FROM TBL_BOARD
+			WHERE BNO = #{bno}
+	</select>
+	<update id="update">
+		UPDATE TBL_BOARD SET TITLE = #{title}, CONTENT = #{content}, WRITER = #{writer}
+			WHERE BNO = #{bno}
+	</update>
+	<delete id="delete">
+		DELETE FROM TBL_BOARD WHERE BNO = #{bno}
+	</delete>
+	<select id="listAll" resultType="com.spring.domain.BoardVO">
+	<![CDATA[
+		SELECT BNO, TITLE, CONTENT, WRITER, REGDATE, VIEWCNT
+				FROM TBL_BOARD
+		        WHERE BNO > 0
+		        ORDER BY BNO DESC
+		        ]]>
+	</select>
+	<select id="listCountCriteria" resultType="int">
+		SELECT COUNT(*) FROM TBL_BOARD
+	</select>
+	<select id="listCriteria" resultType="com.spring.domain.BoardVO">
+	<![CDATA[
+		SELECT * FROM (
+			SELECT ROWNUM RNUM, BNO, TITLE, CONTENT, WRITER, REGDATE, VIEWCNT
+				FROM (SELECT * FROM TBL_BOARD ORDER BY BNO DESC)
+					)			
+		WHERE (RNUM >= #{pageStart} AND RNUM <= #{pageEnd})
+		ORDER BY BNO DESC, REGDATE DESC
+		]]>
+	</select>
+	
+</mapper>
