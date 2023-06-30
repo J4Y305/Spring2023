@@ -108,6 +108,36 @@ public class BoardController {
 		model.addAttribute("pageMaker", pageMaker);
 	}
 	
+	@RequestMapping(value="/readPage", method=RequestMethod.GET)
+	public void readPage(@ModelAttribute("cri") Criteria cri, 
+			@RequestParam("bno") int bno, Model model) throws Exception{
+		logger.info("readPage GET.....");
+		
+		model.addAttribute(service.read(bno));
+	}
+	
+	@RequestMapping(value="/modifyPage", method=RequestMethod.GET)
+	public void modifyPageGET(@RequestParam("bno") int bno, 
+			@ModelAttribute("cri") Criteria cri, Model model) throws Exception{
+		logger.info("modifyPage GET.....");
+		
+		model.addAttribute(service.read(bno));
+	}
+	
+	@RequestMapping(value="/modifyPage", method=RequestMethod.POST)
+	public String modifyPagePOST(BoardVO vo, @ModelAttribute("cri") Criteria cri,RedirectAttributes rttr) throws Exception{
+		
+		logger.info("modifyPage POST.....");
+		
+		service.modify(vo);
+		
+		rttr.addAttribute("page", cri.getPage());
+		rttr.addAttribute("perpage", cri.getPerPageNum());
+		rttr.addFlashAttribute("msg", "SUCCESS");
+		
+		return "redirect:/board/listPage";
+	}
+	
 	
 	
 }
