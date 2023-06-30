@@ -135,7 +135,7 @@ public class BoardController {
 		rttr.addAttribute("perpage", cri.getPerPageNum());
 		rttr.addFlashAttribute("msg", "SUCCESS");
 		
-		return "redirect:/board/listPage"; 
+		return "redirect:/board/listPage";
 	}
 	
 	
