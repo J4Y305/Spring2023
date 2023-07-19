@@ -7,18 +7,22 @@
 		INSERT INTO TBL_BOARD (BNO, TITLE, CONTENT, WRITER)
 			VALUES (SEQ_BOARD.nextval, #{title}, #{content}, #{writer})
 	</insert>
+	
 	<select id="read" resultType="com.spring.domain.BoardVO">
 		SELECT BNO, TITLE, CONTENT, WRITER, REGDATE, VIEWCNT
 			FROM TBL_BOARD
 			WHERE BNO = #{bno}
 	</select>
+	
 	<update id="update">
 		UPDATE TBL_BOARD SET TITLE = #{title}, CONTENT = #{content}, WRITER = #{writer}
 			WHERE BNO = #{bno}
 	</update>
+	
 	<delete id="delete">
 		DELETE FROM TBL_BOARD WHERE BNO = #{bno}
 	</delete>
+	
 	<select id="listAll" resultType="com.spring.domain.BoardVO">
 	<![CDATA[
 		SELECT BNO, TITLE, CONTENT, WRITER, REGDATE, VIEWCNT
@@ -27,9 +31,11 @@
 		        ORDER BY BNO DESC
 		        ]]>
 	</select>
+	
 	<select id="listCountCriteria" resultType="int">
 		SELECT COUNT(*) FROM TBL_BOARD
 	</select>
+	
 	<select id="listCriteria" resultType="com.spring.domain.BoardVO">
 	<![CDATA[
 		SELECT * FROM (
@@ -40,5 +46,64 @@
 		ORDER BY BNO DESC, REGDATE DESC
 		]]>
 	</select>
+	
+	<sql id="search">
+		<if test="searchType != null">
+			<if test="searchType == 't'.toString()">
+				AND TITLE LIKE '%' || #{keyword} || '%'	
+			</if>
+			<if test="searchType == 'c'.toString()">
+				AND CONTENT LIKE '%' || #{keyword} || '%'	
+			</if>
+			<if test="searchType == 'w'.toString()">
+				AND WRITER LIKE '%' || #{keyword} || '%'	
+			</if>
+			<if test="searchType == 'tc'.toString()">
+				AND (TITLE LIKE '%' || #{keyword} || '%')
+					OR 
+					(CONTENT LIKE '%' || #{keyword} || '%')
+			</if>
+			<if test="searchType == 'cw'.toString()">
+				AND (CONTENT LIKE '%' || #{keyword} || '%')
+					OR 
+					(WRITER LIKE '%' || #{keyword} || '%')
+			</if>
+			<if test="searchType == 'tcw'.toString()">
+				AND (TITLE LIKE '%' || #{keyword} || '%')
+					OR 
+					(CONTENT LIKE '%' || #{keyword} || '%')
+					OR
+					(WRITER LIKE '%' || #{keyword} || '%')
+			</if>
+		</if>
+	</sql>
+	
+	<select id="listSearchCriteria" resultType="com.spring.domain.BoardVO">
+	<![CDATA[
+		SELECT * FROM (
+			SELECT ROWNUM RNUM, BNO, TITLE, CONTENT, WRITER, REGDATE, VIEWCNT
+				FROM (SELECT * FROM TBL_BOARD WHERE BNO > 0 
+		]]>
+				<include refid="search"></include>
+				
+	<![CDATA[					
+		ORDER BY BNO DESC))			
+		WHERE (RNUM >= #{pageStart} AND RNUM <= #{pageEnd})
+		ORDER BY BNO DESC, REGDATE DESC
+		]]>
+	</select>
+	
+	<select id="listSearchCountCriteria" resultType="int">
+	<![CDATA[
+		SELECT COUNT(*) FROM TBL_BOARD
+		WHERE BNO > 0
+	]]>
+		<include refid="search"></include>
+	</select>
+	
+	<update id="updateViewCount">
+		UPDATE TBL_BOARD SET VIEWCNT = VIEWCNT + 1
+		WHERE BNO = #{bno}
+	</update>
 	
 </mapper>
