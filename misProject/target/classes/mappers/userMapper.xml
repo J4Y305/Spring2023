@@ -5,7 +5,7 @@
 <mapper namespace="com.spring.mapper.UserMapper">
 
 	<select id="login" resultType="com.spring.domain.UserVO">
-		SELECT USID, UPW, UNAME, UPOINT, FROM TBL_USER
+		SELECT USID, UPW, UNAME, UPOINT FROM TBL_USER
 		WHERE USID = #{usid} AND UPW = #{upw}
 	</select>
 
