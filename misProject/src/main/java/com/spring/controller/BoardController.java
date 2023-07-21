@@ -90,7 +90,7 @@ public class BoardController {
 		return "redirect:/board/listAll";
 	}
 	
-	// 페이징 기능 추가
+	// *페이징 기능 추가*
 	@RequestMapping(value="listPage", method=RequestMethod.GET)
 	public void listPage(@ModelAttribute("cri") Criteria cri, Model model) throws Exception{
 		logger.info("listPage GET.....");
