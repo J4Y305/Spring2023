@@ -27,7 +27,7 @@ public class SearchBoardController {
 		
 	}
 	
-	@RequestMapping(value="/registxer", method=RequestMethod.POST)
+	@RequestMapping(value="/register", method=RequestMethod.POST)
 	public String registerPOST(BoardVO vo, RedirectAttributes rttr) throws Exception{
 		service.register(vo);
 		rttr.addFlashAttribute("msg", "SUCCESS");

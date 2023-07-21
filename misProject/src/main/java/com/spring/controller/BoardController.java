@@ -37,7 +37,7 @@ public class BoardController {
 		
 		// 게시글 등록
 		service.register(vo);
-		
+
 		return "redirect:/board/listAll";
 	}
 	
