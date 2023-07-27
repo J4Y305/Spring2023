@@ -5,8 +5,64 @@
 <mapper namespace="com.spring.mapper.UserMapper">
 
 	<select id="login" resultType="com.spring.domain.UserVO">
-		SELECT USID, UPW, UNAME, UPOINT FROM TBL_USER
+		SELECT USID, UPW, UNAME, UPOINT
+		FROM TBL_USER
 		WHERE USID = #{usid} AND UPW = #{upw}
 	</select>
+
+	<insert id="create">
+		INSERT INTO TBL_USER (USID, UPW, UNAME, UPOINT)
+		VALUES (#{usid}, #{upw}, #{uname}, #{upoint})
+	</insert>
+
+	<update id="update">
+		UPDATE TBL_USER SET UNAME = #{uname}, UPW = #{upw},
+		UPOINT = #{upoint}
+		WHERE USID = #{usid}
+	</update>
+
+	<delete id="delete">
+		DELETE FROM TBL_USER WHERE USID = #{usid}
+	</delete>
+
+	<sql id="search">
+		<if test="searchType != null">
+			<if test="searchType == 'i'.toString()">
+				AND USID LIKE '%' || #{keyword} || '%'
+			</if>
+			<if test="searchType == 'n'.toString()">
+				AND UNAME LIKE '%' || #{keyword} || '%'
+			</if>
+			<if test="searchType == 'in'.toString()">
+				AND (USID LIKE '%' || #{keyword} || '%')
+					OR 
+					(UNAME LIKE '%' || #{keyword} || '%')
+			</if>
+		</if>
+	</sql>
+
+	<select id="listSearch" resultType="com.spring.domain.UserVO">
+	<![CDATA[
+		SELECT * FROM (
+			SELECT ROWNUM RNUM, USID, UNAME, UPOINT
+				FROM (SELECT * FROM TBL_USER WHERE USID IS NOT NULL
+		]]>
+		<include refid="search"></include>
+				
+	<![CDATA[					
+		ORDER BY USID DESC))
+			WHERE (RNUM >= #{pageStart} AND RNUM <= #{pageEnd})
+		ORDER BY USID DESC
+		]]>
+	</select>
+
+	<select id="listSearchCount" resultType="int">
+	<![CDATA[
+		SELECT COUNT(*) FROM TBL_USER
+			WHERE USID IS NOT NULL
+	]]>
+		<include refid="search"></include>
+	</select>
+
 
 </mapper>
