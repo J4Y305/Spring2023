@@ -52,7 +52,7 @@ public class ProductController {
 			@ModelAttribute("cri") SearchCriteria cri, RedirectAttributes rttr, Model model) throws Exception {
 		logger.info("modifyPage GET.....");
 
-		// 수정할 수 있으려면, 로그인한 정보와 글의 작성자의 정보가 동일할 때만 삭제 page로 이동.
+		// 삭제하려면 로그인한 정보와 게시글의 작성자가 일치.
 
 		// 1) 로그인 정보 가져오기
 		UserVO user = (UserVO) session.getAttribute("login");
@@ -63,39 +63,24 @@ public class ProductController {
 
 		// 2-2) 게시글 작성자와 id와 로그인 정보 id 비교.
 		if (user.getUsid().equals(product.getWriter())) {
-			// 작성자와 로그인 정보 같음.
-			
-			// 수정 페이지로 이동.
+			// 작성자와 로그인 정보 같음 -> 게시글 삭제
 			logger.info("remove POST.....");
 			service.remove(pno);
+			// 목록화면으로 이동.
 			rttr.addFlashAttribute("msg", "SUCCESS");
 			return "redirect:/product/list";
 		} else {
-			// 로그인 정보와 게시글 작성자가 일치하지 않는 경우 -> 강제이동
+			// 로그인 정보와 게시글 작성자가 일치하지 않는 경우 -> 상세페이지로 강제이동
 			rttr.addAttribute("pno", pno);
 			rttr.addAttribute("page", cri.getPage());
 			rttr.addAttribute("perPageNum", cri.getPerPageNum());
 			rttr.addAttribute("searchType", cri.getSearchType());
 			rttr.addAttribute("keyword", cri.getKeyword());
-			rttr.addFlashAttribute("msg", "로그인 정보가 일치하지 않아 삭제 불가능합니다.");
+			rttr.addFlashAttribute("msg", "잘못된 접근입니다.");
 
 			return "redirect:/product/readPage";
 		}
 	}
-
-	// @RequestMapping(value = "/removePage", method = RequestMethod.POST)
-	// public String remove(@RequestParam("pno") int pno, RedirectAttributes rttr)
-	// throws Exception {
-	// // 1) POST 구현
-	// // 2) 삭제 후 redirect 처리
-	// logger.info("remove GET.....");
-	//
-	// service.remove(pno);
-	//
-	// rttr.addFlashAttribute("msg", "SUCCESS");
-	//
-	// return "redirect:/product/list";
-	// }
 
 	@RequestMapping(value = "/readPage", method = RequestMethod.GET)
 	public void readPage(@RequestParam("pno") int pno, @ModelAttribute("cri") SearchCriteria cri, Model model)
@@ -148,7 +133,7 @@ public class ProductController {
 			rttr.addAttribute("perPageNum", cri.getPerPageNum());
 			rttr.addAttribute("searchType", cri.getSearchType());
 			rttr.addAttribute("keyword", cri.getKeyword());
-			rttr.addFlashAttribute("msg", "로그인 정보가 일치하지 않아 수정 불가능합니다.");
+			rttr.addFlashAttribute("msg", "잘못된 접근입니다.");
 
 			return "redirect:/product/readPage";
 		}

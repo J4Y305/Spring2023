@@ -30,10 +30,12 @@
 	<interceptors>
 		<interceptor>
 			<mapping path="/user/loginPost"/>
+			<mapping path="/user/list"/>
 			<beans:ref bean="LoginInterceptor"/>
 		</interceptor>
 			
 		<interceptor>
+			<mapping path="/product/register"/>
 			<mapping path="/product/modifyPage"/>
 			<mapping path="/product/removePage"/>
 			<mapping path="/sboard/register"/>
