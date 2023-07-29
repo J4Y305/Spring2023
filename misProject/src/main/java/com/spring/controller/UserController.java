@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.spring.domain.PageMaker;
-import com.spring.domain.ProductVO;
 import com.spring.domain.SearchCriteria;
 import com.spring.domain.UserVO;
 import com.spring.dto.LoginDTO;
@@ -79,6 +78,7 @@ public class UserController {
 	@RequestMapping(value = "/readPage", method = RequestMethod.GET)
 	public void readPage(@RequestParam("usid") String usid, @ModelAttribute("cri") SearchCriteria cri, Model model)
 			throws Exception {
+		logger.info("readPage.....");
 		model.addAttribute(service.read(usid));
 	}
 
@@ -102,7 +102,7 @@ public class UserController {
 			// 작성자와 로그인 정보 같음.
 			model.addAttribute(product);
 			// 수정 페이지로 이동.
-			return "/product/modifyPage";
+			return "/user/modifyPage";
 		} else {
 			// 로그인 정보와 게시글 작성자가 일치하지 않는 경우 -> 강제이동
 			rttr.addAttribute("usid", usid);
@@ -136,10 +136,10 @@ public class UserController {
 
 	// REMOVEPAGE
 	@RequestMapping(value = "/removePage", method = RequestMethod.POST)
-	public String removePageGET(@RequestParam("usid") String usid, HttpSession session,
+	public String removePagePOST(@RequestParam("usid") String usid, HttpSession session,
 			@ModelAttribute("cri") SearchCriteria cri, RedirectAttributes rttr, Model model) throws Exception {
-		logger.info("modifyPage GET.....");
-
+		logger.info("removePage POST.....");
+ 
 		// 삭제하려면 로그인한 정보와 게시글의 작성자가 일치.
 
 		// 1) 로그인 정보 가져오기
@@ -156,7 +156,7 @@ public class UserController {
 			service.delete(usid);
 			// 목록화면으로 이동.
 			rttr.addFlashAttribute("msg", "SUCCESS");
-			return "redirect:/user/";
+			return "redirect:/user/list";
 		} else {
 			// 로그인 정보와 게시글 작성자가 일치하지 않는 경우 -> 상세페이지로 강제이동
 			rttr.addAttribute("usid", usid);
@@ -166,7 +166,7 @@ public class UserController {
 			rttr.addAttribute("keyword", cri.getKeyword());
 			rttr.addFlashAttribute("msg", "잘못된 접근입니다.");
 
-			return "redirect:/product/readPage";
+			return "redirect:/user/readPage";
 		}
 	}
 

@@ -20,6 +20,12 @@
 		UPOINT = #{upoint}
 		WHERE USID = #{usid}
 	</update>
+	
+	<select id="read" resultType="com.spring.domain.UserVO">
+		SELECT USID, UPW, UNAME, UPOINT
+			FROM TBL_USER
+			WHERE USID = #{usid}
+	</select>
 
 	<delete id="delete">
 		DELETE FROM TBL_USER WHERE USID = #{usid}

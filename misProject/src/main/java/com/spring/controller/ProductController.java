@@ -48,9 +48,9 @@ public class ProductController {
 
 	// REMOVE
 	@RequestMapping(value = "/removePage", method = RequestMethod.POST)
-	public String removePageGET(@RequestParam("pno") int pno, HttpSession session,
+	public String removePagePOST(@RequestParam("pno") int pno, HttpSession session,
 			@ModelAttribute("cri") SearchCriteria cri, RedirectAttributes rttr, Model model) throws Exception {
-		logger.info("modifyPage GET.....");
+		logger.info("removePage POST.....");
 
 		// 삭제하려면 로그인한 정보와 게시글의 작성자가 일치.
 
@@ -85,6 +85,7 @@ public class ProductController {
 	@RequestMapping(value = "/readPage", method = RequestMethod.GET)
 	public void readPage(@RequestParam("pno") int pno, @ModelAttribute("cri") SearchCriteria cri, Model model)
 			throws Exception {
+		logger.info("readPage.....");
 		model.addAttribute(service.read(pno));
 	}
 
